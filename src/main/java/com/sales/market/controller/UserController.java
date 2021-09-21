@@ -2,6 +2,8 @@ package com.sales.market.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sales.market.dto.*;
+import com.sales.market.model.Affair;
+import com.sales.market.model.RoleType;
 import com.sales.market.model.User;
 import com.sales.market.service.EmailService;
 import com.sales.market.service.GenericService;
@@ -107,6 +109,7 @@ public class UserController extends GenericController<User, UserDto> {
         String url = redirect + "?token=" + tokenService.generateTokenByDay(1, user, false);
         parameters.put("invitationLink", url);
         emailService.sendMail(new MailDto(to, "Subscription link", "invitation-template", parameters));
+//        emailService.sendMailOnly(RoleType.GROCER, Affair.INVENTARY_LOWER_BOUND);
         return new ResponseEntity<>(new OperationResultDto<>("messages.user.invitedUser"), HttpStatus.OK);
     }
 

@@ -1,9 +1,12 @@
 package com.sales.market.service;
 
+import com.sales.market.model.RoleType;
 import com.sales.market.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.List;
 
 public interface UserService extends GenericService<User> {
 
@@ -24,4 +27,6 @@ public interface UserService extends GenericService<User> {
     User save(String firstName, String lastName, String email, String password);
 
     User update(User model);
+
+    List<User> getAllByRoleEquals(RoleType roleType);
 }

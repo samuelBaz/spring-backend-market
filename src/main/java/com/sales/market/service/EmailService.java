@@ -1,12 +1,18 @@
 package com.sales.market.service;
 
 import com.sales.market.dto.MailDto;
+import com.sales.market.dto.OperationResultDto;
+import com.sales.market.model.Affair;
+import com.sales.market.model.RoleType;
+import com.sales.market.model.User;
 import io.jsonwebtoken.lang.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,10 +25,8 @@ import javax.activation.DataSource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EmailService {
@@ -86,4 +90,24 @@ public class EmailService {
         return springTemplateEngine.process(templateName, context);
     }
 
+    public void sendMailOnly(RoleType roleType, Affair affair) {
+        String[] grocerEmails = userService.getAllByRoleEquals(roleType).stream().map(User::getEmail).toArray(String[]::new);
+        new Thread(() -> {
+            try {
+                Map<String, Object> parameters = new HashMap<>();
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true);
+                helper.setTo(grocerEmails);
+                helper.setSubject(affair.getDescription());
+                helper.setFrom(host);
+                message.setContent(getHtmlTemplate("notification-template", parameters),
+                        MimeTypeUtils.TEXT_HTML_VALUE);
+                if (!Collections.isEmpty(Arrays.asList(grocerEmails))) {
+                    mailSender.send(message);
+                }
+            } catch (MessagingException | MailException e) {
+                logger.error("Error sending email: ", e);
+            }
+        }).start();
+    }
 }

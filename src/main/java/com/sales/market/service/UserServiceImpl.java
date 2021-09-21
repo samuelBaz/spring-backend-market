@@ -139,4 +139,18 @@ public class UserServiceImpl extends GenericServiceImpl<User> implements UserSer
         }
         return userRepository.save(user);
     }
+
+    @Override
+    public List<User> getAllByRoleEquals(RoleType roleType) {
+        List<User> users = userRepository.findAll();
+        List<User> usersFiltered = users.stream().filter(user -> haveRole(user.getRoles(), roleType)).collect(Collectors.toList());
+        return usersFiltered;
+    }
+
+    private boolean haveRole(Set<Role> roles, RoleType roleType) {
+        for (Role role: roles) {
+            if(role.getId() == roleType.getId()) return true;
+        }
+        return false;
+    }
 }

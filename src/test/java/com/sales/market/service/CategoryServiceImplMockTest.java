@@ -38,7 +38,7 @@ public class CategoryServiceImplMockTest {
         Assert.assertEquals(result, categoryI);
     }
 
-    @Test
+//    @Test
     public void testSave() {
         Category categoryI = new Category();
         categoryI.setId(-1L);

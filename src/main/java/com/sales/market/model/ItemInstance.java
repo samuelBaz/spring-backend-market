@@ -66,4 +66,12 @@ public class ItemInstance extends ModelBase<ItemInstanceDto> {
         setItem((Item) new Item().toDomain(element.getItemDto(), mapper));
         return this;
     }*/
+
+    public ItemInstanceStatus getItemInstanceStatus() {
+        return itemInstanceStatus;
+    }
+
+    public void setItemInstanceStatus(ItemInstanceStatus itemInstanceStatus) {
+        this.itemInstanceStatus = itemInstanceStatus;
+    }
 }
